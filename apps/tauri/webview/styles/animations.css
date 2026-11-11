@@ -1,0 +1,85 @@
+@keyframes sprite-hue {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  50% {
+    filter: hue-rotate(150deg);
+  }
+
+  100% {
+    filter: hue-rotate(300deg);
+  }
+}
+
+@keyframes sprite-blink {
+  0%,
+  45%,
+  48%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  46%,
+  47% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes sprite-think {
+  0%,
+  100% {
+    opacity: 0.36;
+    filter: blur(1.2px);
+  }
+
+  50% {
+    opacity: 0.6;
+    filter: blur(1.4px);
+  }
+}
+
+@keyframes sprite-plan {
+  0%,
+  100% {
+    opacity: 0.42;
+    filter: blur(1.2px);
+  }
+
+  50% {
+    opacity: 0.68;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes sprite-plan-ring {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.35;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(0.96);
+    opacity: 0.35;
+  }
+}
+
+@keyframes sprite-speak-mouth {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(0.55);
+  }
+
+  30% {
+    transform: translateY(2px) scaleY(1.05);
+  }
+
+  60% {
+    transform: translateY(1px) scaleY(0.78);
+  }
+}

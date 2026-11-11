@@ -1,0 +1,22 @@
+{
+  "name": "sprite-assistant",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "tauri:icon": "tauri icon ./assets/app-icon.png",
+    "lint:css": "stylelint webview/**/*.css",
+    "lint:js": "eslint \"webview/panel/**/*.js\" \"webview/main.js\" \"webview/modules/**/*.js\""
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "eslint": "^8.57.1",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1"
+  },
+  "dependencies": {
+    "@tauri-apps/plugin-global-shortcut": "^2.3.0"
+  }
+}

@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+build/
+**/target/
+apps/tauri/src-tauri/target/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+.pytest_cache/
+
+# Python build artifacts
+*.spec
+*.exe
+*.dll
+*.pyd
+*.pyc
+*.pyo
+*.egg
+*.whl
+*.tar.gz
+
+# Cloudflare Worker
+.wrangler/
+apps/worker/.env
+apps/worker/.env.local
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+apps/tauri/src-tauri/resources/whisper/
+.dev/
+
+# Piper runtime bundle (MIT release)
+!apps/tauri/src-tauri/resources/piper/
+!apps/tauri/src-tauri/resources/piper/**

@@ -1,0 +1,22 @@
+{
+  "name": "worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm exec wrangler dev",
+    "deploy": "pnpm exec wrangler deploy",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "pnpm exec vitest run"
+  },
+  "dependencies": {
+    "@sprite/shared": "workspace:*",
+    "hono": "^4.5.0",
+    "openai": "^4.60.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251211.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "wrangler": "^4.50.0"
+  }
+}

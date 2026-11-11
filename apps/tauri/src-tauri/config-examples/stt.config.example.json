@@ -1,0 +1,19 @@
+{
+  "provider": "local",
+  "model": {
+    "id": "model-id",
+    "language": { "auto": true, "default": "language-code" },
+    "punctuation": true
+  },
+  "wakeword": { "keyword": "wakeword", "sensitivity": 0.5 },
+  "vad": {
+    "aggressiveness": 2,
+    "start_grace_ms": 3000,
+    "max_segment_ms": 12000,
+    "activation_ms": 240,
+    "post_speech_silence_ms": 1500
+  },
+  "hotkey": { "push_to_talk": "Ctrl+Space", "mode_precedence": "ptt" },
+  "telemetry": { "level": "errors", "raw_payload_logs": false },
+  "sprite": { "scale": 0.3 }
+}

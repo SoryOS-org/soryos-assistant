@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+.pytest_cache/
+
+# Python build artifacts
+build/
+dist/
+*.spec
+*.exe
+*.dll
+*.pyd
+*.pyc
+*.pyo
+*.egg
+*.whl
+*.tar.gz
+
+# PyInstaller
+*.manifest
+*.toc
+
+# Audio files (if any test recordings)
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,5 @@
+[build]
+target-dir = "apps/tauri/src-tauri/target"
+
+[env]
+LIBCLANG_PATH = "C:/Program Files/LLVM/bin"

@@ -1,0 +1,334 @@
+:root {
+  color-scheme: dark;
+
+  --panel-bg: #111418;
+  --panel-elevated: #1a1f26;
+  --panel-border: #272d35;
+  --panel-accent: #5b8def;
+  --panel-text: #e6ecf4;
+  --panel-muted: #9aa5b5;
+  --panel-radius: 12px;
+  --panel-gap: 16px;
+
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  row-gap: 0;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--panel-elevated);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.panel-header__titles h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.panel-header__subtitle {
+  margin: 4px 0 0;
+  color: var(--panel-muted);
+  font-size: 13px;
+}
+
+.panel-header__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.panel-header__status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.panel-header__meta {
+  font-size: 12px;
+  color: var(--panel-muted);
+}
+
+.panel-header__latency {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.latency-readout {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--panel-text);
+}
+
+.latency-readout[data-status="error"] {
+  color: #ff6b81;
+}
+
+.latency-meta {
+  font-size: 11px;
+  color: var(--panel-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.latency-meta[data-status="error"] {
+  color: #ff9aa8;
+}
+
+.panel-preload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px 14px;
+  background: rgb(50 84 132 / 18%);
+  border-top: 1px solid rgb(82 116 168 / 24%);
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 13px;
+  color: rgb(222 236 255 / 95%);
+}
+
+.panel-preload[hidden] {
+  display: none;
+}
+
+.panel-preload__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--panel-accent);
+  box-shadow: 0 0 12px rgb(91 141 239 / 60%);
+  flex-shrink: 0;
+}
+
+.panel-preload__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.panel-preload__message {
+  margin: 0;
+  color: rgb(208 224 255 / 92%);
+}
+
+.panel-preload--error {
+  background: rgb(184 64 82 / 18%);
+  border-top-color: rgb(212 102 124 / 30%);
+  color: #ffd7de;
+}
+
+.panel-preload--error .panel-preload__dot {
+  background: #ff6b81;
+  box-shadow: 0 0 12px rgb(255 107 129 / 70%);
+}
+
+.panel-preload--error .panel-preload__message {
+  color: rgb(255 204 214 / 96%);
+}
+
+.panel-preload__progress {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(94 138 212 / 25%);
+  overflow: hidden;
+  position: relative;
+  margin-left: auto;
+  min-width: 120px;
+}
+
+.panel-preload__progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgb(124 186 255 / 95%), rgb(172 224 255 / 95%));
+  box-shadow: 0 0 10px rgb(124 186 255 / 45%);
+  transition: width 200ms ease;
+}
+
+.config-dirty-pill {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgb(255 179 71 / 20%);
+  border: 1px solid rgb(255 179 71 / 35%);
+  color: #ffe6c2;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 30%);
+}
+
+.config-dirty-pill[hidden] {
+  display: none;
+}
+
+.config-dirty-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffb347;
+  box-shadow: 0 0 12px rgb(255 179 71 / 70%);
+  flex-shrink: 0;
+}
+
+.config-dirty-pill--auth {
+  top: 54px;
+  background: rgb(255 107 129 / 20%);
+  border-color: rgb(255 107 129 / 35%);
+  color: #ffd7de;
+}
+
+.config-dirty-pill--auth .config-dirty-pill__dot {
+  background: #ff6b81;
+  box-shadow: 0 0 12px rgb(255 107 129 / 70%);
+}
+
+.config-dirty-pill--stt {
+  top: 94px;
+  background: rgb(239 91 91 / 20%);
+  border-color: rgb(239 91 91 / 35%);
+  color: #ffd8d8;
+}
+
+.config-dirty-pill--stt .config-dirty-pill__dot {
+  background: #ef5b5b;
+  box-shadow: 0 0 12px rgb(239 91 91 / 70%);
+}
+
+.state-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(91 141 239 / 16%);
+  color: var(--panel-text);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.state-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--panel-accent);
+  display: inline-block;
+}
+
+.state-pill--error {
+  background: rgb(239 91 91 / 16%);
+}
+
+.state-pill--error .state-pill__dot {
+  background: #ef5b5b;
+}
+
+.panel-nav {
+  display: flex;
+  gap: 2px;
+  padding: 0 16px;
+  background: var(--panel-elevated);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.panel-nav__item {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--panel-muted);
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: var(--panel-radius);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.panel-nav__item.is-active,
+.panel-nav__item:hover {
+  color: var(--panel-text);
+  background: rgb(91 141 239 / 14%);
+}
+
+.panel-main {
+  padding: 24px;
+  background: var(--panel-bg);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  overflow: hidden auto;
+  min-height: 0;
+}
+
+.panel-view {
+  display: none;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.panel-view--active {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 16px;
+}
+
+.panel-view--active:not([data-view="chat"]) {
+  overflow: auto;
+}
+
+.panel-view__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-view--active[data-view="config"] {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-view__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.panel-view__subtitle {
+  margin: 4px 0 0;
+  color: var(--panel-muted);
+  font-size: 13px;
+}

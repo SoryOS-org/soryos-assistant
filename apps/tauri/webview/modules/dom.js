@@ -1,0 +1,9 @@
+export const closeBtn = document.querySelector("#close-btn");
+export const spriteContainer = document.querySelector("[data-sprite-container]");
+export const spriteSurface = document.querySelector(".sprite__surface");
+export const preloadOverlay = document.querySelector("[data-preload-overlay]");
+export const preloadMessage = document.querySelector("[data-preload-message]");
+export const preloadProgressContainer = document.querySelector("[data-preload-progress-container]");
+export const preloadProgressBar = document.querySelector("[data-preload-progress]");
+export const preloadDismissButton = document.querySelector("[data-preload-dismiss]");
+export const spriteWarning = document.querySelector("[data-sprite-warning]");

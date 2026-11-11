@@ -1,0 +1,7 @@
+allowBuilds:
+  esbuild: true
+# Local-only pnpm settings for the standalone desktop package.
+# NOTE: this file makes apps/tauri/desktop its own (single-package) workspace,
+# which is intentional while the v2 UI stays outside the root workspace.
+onlyBuiltDependencies:
+  - esbuild

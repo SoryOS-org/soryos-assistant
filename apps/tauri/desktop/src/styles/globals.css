@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+ * Sprite Assistant v2 — global styles & design tokens.
+ *
+ * Dark palette aligned with ChatGPT's desktop app (near-black surfaces,
+ * subtle borders, muted text) while keeping the `--color-sprite-*` naming.
+ *
+ * Tailwind v4: theme is declared in CSS (no tailwind.config.js needed).
+ */
+
+@theme {
+  --color-sprite-bg: #212121; /* main chat surface */
+  --color-sprite-surface: #171717; /* sidebar / rails */
+  --color-surface-raised: #2f2f2f; /* hover / user bubble */
+  --color-sprite-border: #2e2e2e;
+  --color-sprite-text: #ececec;
+  --color-sprite-muted: #8f8f8f;
+  --color-sprite-accent: #10a37f; /* ChatGPT green */
+  --color-sprite-accent-hover: #1db894;
+  --color-sprite-danger: #ff5f6b;
+  --color-sprite-success: #3fd08f;
+  --color-composer: #303030; /* composer pill */
+  --color-composer-border: #424242;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-sprite-bg);
+  color: var(--color-sprite-text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+/* Allow text selection inside chat / code areas only. */
+[data-selectable="true"] {
+  user-select: text;
+  cursor: text;
+}
+
+/* Thin scrollbars, desktop-app feel. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #3a3a3a;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Session rows: ChatGPT-style fade on hover actions. */
+.session-row .session-delete {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.session-row:hover .session-delete {
+  opacity: 1;
+}
+
+/* Voice orb — slow breathing when idle, fast pulse when active. */
+@keyframes voice-orb-breathe {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.15);
+    transform: scale(1.06);
+  }
+}
+
+.voice-orb {
+  transition: transform 90ms ease-out, background-color 300ms ease;
+}
+
+.voice-orb--idle {
+  animation: voice-orb-breathe 3.2s ease-in-out infinite;
+}

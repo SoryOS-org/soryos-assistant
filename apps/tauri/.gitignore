@@ -1,0 +1,25 @@
+# Dependencies
+/node_modules
+/node_modules/
+
+# Rust build artifacts
+/src-tauri/target/
+/src-tauri/.cargo/registry/
+/src-tauri/.cargo/git/
+/src-tauri/gen/
+preferences.config.json
+
+# Tauri build artifacts
+/src-tauri/target/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

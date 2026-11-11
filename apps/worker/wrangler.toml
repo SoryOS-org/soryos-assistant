@@ -1,0 +1,23 @@
+name = "sprite-boss"
+main = "src/index.ts"
+compatibility_date = "2024-10-01"
+# compatibility_flags = ["nodejs_compat"]  # enable only if a lib requires Node APIs
+preview_urls = true
+workers_dev = true  # or false if you ever switch to a custom route only
+
+[[durable_objects.bindings]]
+name = "MACHINE_STATE"
+class_name = "MachineStateDO"
+script_name = "sprite-boss"
+
+# Add this section
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MachineStateDO"]
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1

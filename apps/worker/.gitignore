@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Cloudflare Worker
+.wrangler/
+.devvars
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,179 @@
+.sprite__surface {
+  --vu-level: 0;
+  --state-color: rgb(120 255 236 / 78%);
+  --state-border: rgb(132 196 208 / 55%);
+  --state-glow: rgb(255 255 255 / 38%);
+  --mouth-rest-scale: 0.48;
+
+  user-select: none;
+  position: relative;
+  width: var(--sprite-surface-width);
+  height: var(--sprite-surface-height);
+  border-radius: 52% 48% 60% 40% / 64% 58% 44% 46%;
+  clip-path: ellipse(47% 50% at 50% 44%);
+  padding: var(--sprite-padding-top) var(--sprite-padding-x) var(--sprite-padding-bottom);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sprite-inner-gap);
+  text-align: center;
+  color: rgb(244 255 253 / 95%);
+  overflow: hidden;
+  pointer-events: auto;
+  cursor: grab;
+  will-change: filter;
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.sprite__surface:active {
+  cursor: grabbing;
+}
+
+.sprite__surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(58% 60% at 50% 38%, var(--state-color) 0%, rgb(28 60 82 / 18%) 55%, rgb(28 60 82 / 0%) 90%);
+  filter: hue-rotate(0deg);
+  animation: sprite-hue 18s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+  transition: background 180ms ease;
+}
+
+
+.sprite__glow {
+  position: absolute;
+  inset: 20% 18% 36%;
+  border-radius: 52% 48% 46% 54% / 62% 58% 44% 42%;
+  background: radial-gradient(circle at 50% 34%, rgb(255 255 255 / 32%), transparent 75%);
+  filter: blur(var(--sprite-glow-blur));
+  opacity: calc(0.35 + (var(--vu-level) * 0.65));
+  transition: opacity 120ms ease, filter 160ms ease;
+  pointer-events: none;
+}
+
+.sprite__face {
+  position: relative;
+  width: var(--sprite-face-width);
+  height: var(--sprite-face-height);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 var(--sprite-face-padding-x) var(--sprite-face-padding-bottom);
+}
+
+.sprite__eye {
+  width: var(--sprite-eye-width);
+  height: var(--sprite-eye-height);
+  background: rgb(255 255 255 / 92%);
+  border-radius: 45% 45% 40% 40%;
+  box-shadow: 0 0 calc(var(--sprite-eye-shadow-base) + var(--sprite-eye-shadow-scale) * var(--vu-level))
+    rgb(169 255 240 / 60%);
+  animation: sprite-blink 6s infinite;
+  transform-origin: center;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sprite__eye--right {
+  animation-delay: 2s;
+}
+
+.sprite__mouth {
+  position: absolute;
+  top: var(--sprite-mouth-top);
+  left: 50%;
+  translate: -50% 0;
+  width: var(--sprite-mouth-width);
+  height: var(--sprite-mouth-height);
+  border-radius: var(--sprite-mouth-radius);
+  background: rgb(44 64 82 / 65%);
+  border: 1px solid var(--state-border);
+  transform-origin: center 10%;
+  transform: scaleY(var(--mouth-rest-scale));
+  transition: transform 80ms ease, background 160ms ease, border 160ms ease;
+}
+
+
+.sprite__close {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 50%);
+  background: rgb(14 22 34 / 86%);
+  color: rgb(255 255 255 / 95%);
+  font-size: 1.2rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease, background 160ms ease, color 160ms ease;
+  z-index: 4;
+}
+
+.sprite__close:hover,
+.sprite__close:focus-visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.sprite__close:hover {
+  background: rgb(22 36 52 / 95%);
+}
+
+.sprite__close:focus-visible {
+  pointer-events: auto;
+  outline: 2px solid rgb(255 255 255 / 70%);
+  outline-offset: 2px;
+}
+
+.sprite:hover .sprite__close {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.sprite__surface * {
+  user-select: none;
+}
+
+.sprite__warning {
+  position: absolute;
+  bottom: calc(6px * var(--sprite-scale));
+  right: calc(6px * var(--sprite-scale));
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  line-height: 1;
+  background: rgb(255 200 140 / 90%);
+  color: rgb(40 20 8 / 95%);
+  border: 1px solid rgb(255 230 200 / 80%);
+  box-shadow: 0 0 8px rgb(255 200 140 / 45%);
+  z-index: 3;
+}
+
+.sprite__warning[data-state="error"] {
+  background: rgb(255 107 129 / 92%);
+  color: rgb(40 10 16 / 95%);
+  border-color: rgb(255 170 182 / 85%);
+  box-shadow: 0 0 10px rgb(255 107 129 / 60%);
+}
+
+.sprite__warning[hidden] {
+  display: none;
+}

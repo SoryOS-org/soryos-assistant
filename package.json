@@ -1,0 +1,20 @@
+{
+  "name": "my-stack",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "start-dev.bat",
+    "dev:worker": "pnpm -C apps/worker dev",
+    "dev:tauri": "pnpm -C apps/tauri tauri:dev",
+    "build:shared": "pnpm -C packages/shared build",
+    "build:voice": "python apps/voice-service/build.py",
+    "build:tauri": "pnpm -C apps/tauri tauri:build",
+    "build:full": "node -e \"console.log('Building shared packages...')\" && pnpm build:shared && node -e \"console.log('Building voice sidecar...')\" && pnpm build:voice && node -e \"console.log('Building Tauri installer...')\" && pnpm build:tauri && node -e \"console.log('Done. Installer output: apps/tauri/src-tauri/target/release/bundle')\"",
+    "install:voice": "python apps/voice-service/setup.py",
+    "lint": "pnpm -C apps/tauri run lint:css && pnpm -C apps/tauri run lint:js",
+    "test:voice": "python apps/voice-service/test_parent.py && python apps/voice-service/test_stdout_monitoring.py && python apps/voice-service/test_termination.py && python apps/voice-service/test_voice_processor.py",
+    "test:worker": "pnpm build:shared && pnpm -C apps/worker test",
+    "deploy:worker": "pnpm -C apps/worker run deploy"
+  }
+}

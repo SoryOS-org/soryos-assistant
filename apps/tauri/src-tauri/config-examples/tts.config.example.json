@@ -1,0 +1,14 @@
+{
+  "provider": "local",
+  "piper": {
+    "download": {
+      "repo_id": "repo-id",
+      "revision": "revision",
+      "voice": "voice/path"
+    }
+  },
+  "playback": {
+    "volume": 1.0,
+    "crossfade_ms": 0
+  }
+}

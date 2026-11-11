@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sprite Assistant</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="viewport">
+      <section class="sprite sprite--hidden" data-sprite-container>
+        <button
+          id="close-btn"
+          class="sprite__close"
+          type="button"
+          aria-label="Close assistant"
+          data-tauri-drag-region="false"
+        >
+          <span aria-hidden="true">&times;</span>
+          <span class="visually-hidden">Close</span>
+        </button>
+        <div class="sprite__surface" data-tauri-drag-region data-visual-state="Idle">
+          <div class="sprite__glow" aria-hidden="true"></div>
+          <div class="sprite__face" aria-hidden="true">
+            <span class="sprite__eye sprite__eye--left"></span>
+            <span class="sprite__eye sprite__eye--right"></span>
+            <span class="sprite__mouth"></span>
+          </div>
+        </div>
+        <div class="sprite__warning" data-sprite-warning title="Wake word disabled: access key missing" hidden>
+          &#9888;
+        </div>
+      </section>
+      <div class="sprite-preload" data-preload-overlay data-tauri-drag-region>
+        <button
+          type="button"
+          class="sprite-preload__dismiss"
+          data-preload-dismiss
+          aria-label="Hide while preparing"
+          title="Hide while preparing"
+          data-tauri-drag-region="false"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="sprite-preload__card">
+          <p class="sprite-preload__title">Preparing speech engine...</p>
+          <p class="sprite-preload__message" data-preload-message>
+            Downloading speech model (if needed)...
+          </p>
+          <div
+            class="sprite-preload__progress"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            data-preload-progress-container
+          >
+            <div class="sprite-preload__progress-bar" data-preload-progress></div>
+          </div>
+          <p class="sprite-preload__hint">You can hide this window while setup finishes.</p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

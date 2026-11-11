@@ -1,0 +1,122 @@
+.sprite__surface[data-visual-state="Listening"] {
+  --state-color: rgb(235 92 92 / 82%);
+  --state-border: rgb(255 150 150 / 72%);
+
+  filter: drop-shadow(0 0 calc(12px + (18px * var(--vu-level))) rgb(255 86 86 / 40%));
+}
+
+.sprite__surface[data-visual-state="Speaking"] {
+  --state-color: rgb(255 214 163 / 88%);
+  --state-border: rgb(255 205 160 / 80%);
+
+  filter: drop-shadow(0 0 calc(10px + (14px * var(--vu-level))) rgb(255 182 120 / 40%));
+}
+
+.sprite__surface[data-visual-state="Speaking"] .sprite__mouth {
+  transform-origin: center;
+  animation: sprite-speak-mouth 450ms ease-in-out infinite;
+  background: rgb(255 203 160 / 70%);
+  border-color: rgb(255 220 190 / 90%);
+}
+
+.sprite__surface[data-visual-state="Planning"] {
+  --state-color: rgb(255 170 150 / 92%);
+  --state-border: rgb(255 120 120 / 85%);
+
+  filter: drop-shadow(0 0 22px rgb(255 90 60 / 45%));
+}
+
+.sprite__surface[data-visual-state="Planning"]::after {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  border-radius: inherit;
+  border: 3px solid rgb(255 100 80 / 60%);
+  opacity: 0.8;
+  animation: sprite-plan-ring 1500ms ease-in-out infinite;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.sprite__surface[data-visual-state="Planning"] .sprite__glow {
+  animation: sprite-plan 1200ms ease-in-out infinite;
+  background: radial-gradient(circle, rgb(255 170 130 / 60%), rgb(255 120 90 / 20%));
+}
+
+.sprite__surface--cue-blink .sprite__eye {
+  animation: sprite-blink 0.4s ease-in-out 1;
+}
+
+.sprite__surface--cue-pulse::before {
+  animation: sprite-hue 4s ease-in-out infinite alternate;
+}
+
+.sprite__surface[data-visual-state="Planning"] .sprite__eye {
+  box-shadow: 0 0 24px rgb(255 120 90 / 85%);
+  background: radial-gradient(circle at 50% 60%, rgb(255 245 235 / 95%), rgb(255 170 150 / 80%));
+}
+
+.sprite__surface[data-visual-state="Thinking"] {
+  --state-color: rgb(144 220 255 / 85%);
+  --state-border: rgb(144 220 255 / 60%);
+}
+
+.sprite__surface[data-visual-state="Thinking"] .sprite__glow {
+  animation: sprite-think 2200ms ease-in-out infinite;
+}
+
+.sprite__surface[data-visual-state="Thinking"] .sprite__eye {
+  box-shadow:
+    0 0 22px rgb(110 200 255 / 75%),
+    0 0 10px rgb(90 170 230 / 40%);
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgb(220 245 255 / 95%) 0%,
+    rgb(170 225 255 / 80%) 48%,
+    rgb(120 200 255 / 35%) 78%,
+    rgb(255 255 255 / 8%) 100%
+  );
+}
+
+.sprite__surface[data-visual-state="Error"] {
+  --state-color: rgb(255 132 152 / 88%);
+  --state-border: rgb(255 150 170 / 70%);
+
+  filter: drop-shadow(0 0 18px rgb(255 96 122 / 35%));
+}
+
+.sprite__surface[data-visual-state="Error"] .sprite__eye {
+  box-shadow: 0 0 18px rgb(255 120 140 / 90%);
+  background: rgb(255 255 255 / 95%);
+}
+
+.sprite__eye::after {
+  content: "";
+  position: absolute;
+  inset: 18% 22% 12%;
+  border-radius: 55% 55% 48% 48%;
+  background: radial-gradient(circle at 50% 38%, rgb(255 110 110 / 90%) 0%, rgb(255 70 70 / 75%) 45%, rgb(255 188 188 / 30%) 80%, transparent 100%);
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.sprite__surface[data-visual-state="Listening"] .sprite__eye {
+  transform: scaleX(1.05) scaleY(calc(1 + (var(--vu-level) * 0.12)));
+  background: radial-gradient(circle at 50% 55%, rgb(255 82 82 / 90%) 0%, rgb(255 70 70 / 70%) 42%, rgb(255 190 190 / 40%) 70%, rgb(255 255 255 / 15%) 100%);
+  box-shadow:
+    0 0 calc(16px + (28px * var(--vu-level))) rgb(255 60 60 / 85%),
+    0 0 10px rgb(255 142 142 / 45%);
+}
+
+.sprite__surface[data-visual-state="Listening"] .sprite__eye::after {
+  opacity: clamp(var(--vu-level), 0.25, 1);
+  transform: scale(calc(0.85 + (var(--vu-level) * 0.12)));
+}
+
+.sprite__surface[data-visual-state="Idle"] {
+  --state-color: rgb(120 255 236 / 60%);
+  --state-border: rgb(132 196 208 / 45%);
+
+  filter: drop-shadow(0 0 12px rgb(40 92 98 / 20%));
+}

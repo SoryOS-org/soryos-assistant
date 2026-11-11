@@ -1,0 +1,92 @@
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+
+[data-tauri-drag-region='false'] {
+  -webkit-app-region: no-drag;
+}
+
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe UI", "SF Pro Display", sans-serif;
+
+  --sprite-scale: 1;
+  --sprite-gap: calc(1.1rem * var(--sprite-scale));
+  --sprite-surface-width: calc(236px * var(--sprite-scale));
+  --sprite-surface-height: calc(308px * var(--sprite-scale));
+  --sprite-padding-top: calc(3.2rem * var(--sprite-scale));
+  --sprite-padding-x: calc(1.6rem * var(--sprite-scale));
+  --sprite-padding-bottom: calc(1.4rem * var(--sprite-scale));
+  --sprite-inner-gap: calc(1.35rem * var(--sprite-scale));
+  --sprite-glow-blur: calc(1.2px * var(--sprite-scale));
+  --sprite-face-width: calc(120px * var(--sprite-scale));
+  --sprite-face-height: calc(74px * var(--sprite-scale));
+  --sprite-face-padding-x: calc(0.6rem * var(--sprite-scale));
+  --sprite-face-padding-bottom: calc(0.6rem * var(--sprite-scale));
+  --sprite-eye-width: calc(18px * var(--sprite-scale));
+  --sprite-eye-height: calc(28px * var(--sprite-scale));
+  --sprite-eye-shadow-base: calc(10px * var(--sprite-scale));
+  --sprite-eye-shadow-scale: calc(20px * var(--sprite-scale));
+  --sprite-mouth-width: calc(62px * var(--sprite-scale));
+  --sprite-mouth-height: calc(26px * var(--sprite-scale));
+  --sprite-mouth-top: calc(48px * var(--sprite-scale));
+  --sprite-mouth-radius: calc(24px * var(--sprite-scale));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viewport {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sprite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sprite-gap);
+  position: relative;
+}
+
+.sprite--hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  transform: scale(0.96);
+}

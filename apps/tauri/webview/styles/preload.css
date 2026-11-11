@@ -1,0 +1,100 @@
+.sprite-preload {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  background: rgb(8 16 24 / 65%);
+  z-index: 6;
+  color: rgb(244 255 253 / 96%);
+  pointer-events: auto;
+}
+
+.sprite-preload__dismiss {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgb(120 200 255 / 32%);
+  background: rgb(12 20 30 / 72%);
+  color: rgb(244 255 253 / 92%);
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.sprite-preload__dismiss:hover {
+  background: rgb(20 32 46 / 86%);
+  border-color: rgb(144 220 255 / 45%);
+}
+
+.sprite-preload__dismiss:focus-visible {
+  outline: 2px solid rgb(144 220 255 / 80%);
+  outline-offset: 2px;
+}
+
+.sprite-preload[hidden] {
+  display: none;
+}
+
+.sprite-preload__card {
+  background: rgb(14 26 38 / 82%);
+  border: 1px solid rgb(120 200 255 / 28%);
+  border-radius: 18px;
+  padding: 1.75rem 2.25rem;
+  box-shadow:
+    0 18px 28px rgb(8 12 24 / 32%),
+    0 0 32px rgb(120 210 255 / 18%);
+  display: grid;
+  gap: 0.6rem;
+  text-align: center;
+  max-width: 320px;
+}
+
+.sprite-preload__hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: rgb(220 236 255 / 80%);
+}
+
+.sprite-preload__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.sprite-preload__message {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: rgb(220 236 255 / 95%);
+}
+
+.sprite-preload__progress {
+  margin-top: 0.8rem;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(82 122 180 / 35%);
+  overflow: hidden;
+  position: relative;
+  transition: opacity 160ms ease;
+}
+
+.sprite-preload__progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgb(114 206 255 / 95%), rgb(182 238 255 / 95%));
+  box-shadow: 0 0 12px rgb(120 230 255 / 45%);
+  transition: width 200ms ease;
+}

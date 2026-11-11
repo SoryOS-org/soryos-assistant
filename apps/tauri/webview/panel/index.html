@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sprite Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./panel.css" />
+  </head>
+  <body>
+    <div id="app" data-view="chat">
+      <header class="panel-header">
+        <div class="panel-header__titles">
+          <h1 class="panel-header__title">Sprite Control Panel</h1>
+          <p class="panel-header__subtitle">Monitor runtime status and configuration</p>
+        </div>
+        <div class="panel-header__actions">
+          <div class="panel-header__status">
+            <span class="state-pill" data-field="ui-state-pill">
+              <span class="state-pill__dot"></span>
+              <span class="state-pill__label" data-field="ui-state-label">Idle</span>
+            </span>
+            <span class="panel-header__meta" data-field="ui-state-updated">Awaiting events...</span>
+            <button id="panel-hide-btn" type="button" class="button button--ghost">
+              Hide
+            </button>
+          </div>
+          <div class="panel-header__latency">
+            <span class="latency-readout" data-latency-readout>Latency: --</span>
+            <span class="latency-meta" data-latency-meta>Waiting for first turn&hellip;</span>
+          </div>
+        </div>
+      <div class="panel-preload" id="preload-banner" hidden>
+        <span class="panel-preload__dot" aria-hidden="true"></span>
+        <strong class="panel-preload__title">Preparing speech engine...</strong>
+        <span class="panel-preload__message" data-preload-banner-message>
+          Downloading speech model (if required)...
+        </span>
+        <div
+          class="panel-preload__progress"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          data-preload-banner-progress
+        >
+          <div class="panel-preload__progress-bar" data-preload-banner-progress-bar></div>
+        </div>
+      </div>
+    </header>
+      <div class="config-dirty-pill" data-config-dirty-pill hidden>
+        <span class="config-dirty-pill__dot" aria-hidden="true"></span>
+        <span class="config-dirty-pill__text">
+          Configuration changed on disk. Restart to apply updates.
+        </span>
+      </div>
+      <div
+        class="config-dirty-pill config-dirty-pill--auth"
+        data-worker-auth-pill
+        hidden
+        title="Worker auth missing or invalid. Set the token in Secrets."
+      >
+        <span class="config-dirty-pill__dot" aria-hidden="true"></span>
+        <span class="config-dirty-pill__text">
+          Worker auth missing. Set token in Secrets.
+        </span>
+      </div>
+      <div
+        class="config-dirty-pill config-dirty-pill--stt"
+        data-stt-error-pill
+        hidden
+        title="Speech engine failed to start. Check logs for details."
+      >
+        <span class="config-dirty-pill__dot" aria-hidden="true"></span>
+        <span class="config-dirty-pill__text">
+          Speech engine failed to start. Check logs.
+        </span>
+      </div>
+      <nav class="panel-nav">
+        <button class="panel-nav__item is-active" data-view="chat">Chat</button>
+        <button class="panel-nav__item" data-view="mcp">MCP</button>
+        <button class="panel-nav__item" data-view="config">Config</button>
+        <button class="panel-nav__item" data-view="preferences">Preferences</button>
+        <button class="panel-nav__item" data-view="logs">Logs</button>
+        <button class="panel-nav__item" data-view="about">About</button>
+      </nav>
+      <main class="panel-main">
+                <section class="panel-view" data-view="config">
+          <div class="config-shell">
+            <div class="config-header">
+              <div>
+                <h2 class="panel-view__title">Configuration</h2>
+                <p class="panel-view__subtitle">Adjust how Sprite hears, wakes, and appears.</p>
+              </div>
+              <div class="config-actions">
+                <span id="config-status" class="status-message" role="status"></span>
+                <div class="config-actions__buttons">
+                  <button
+                    id="config-save-btn"
+                    type="submit"
+                    class="button button--primary"
+                    form="config-edit-form"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+            <form id="config-edit-form" class="config-form" autocomplete="off">
+              <div class="config-scroll">
+                <div class="config-listing">
+              <div class="config-row">
+                <div class="config-row__header">
+                  <div>
+                    <div class="config-row__title">Speech Input</div>
+                    <p class="config-row__subtitle">
+                      Choose how Sprite listens and which Whisper model to run locally.
+                    </p>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="stt-provider">Provider</label>
+                      <p class="config-item__hint">
+                        Choose the speech engine type. API is not yet available.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <select id="stt-provider" name="provider">
+                        <option value="local">Local (default)</option>
+                        <option value="api">API (preview)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="model-path">Model</label>
+                      <p class="config-item__hint">
+                        Pick a model; larger options are slower but more accurate.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <select id="model-path" name="model.id" required></select>
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="model-punctuation">Punctuation</label>
+                      <p class="config-item__hint">Toggle punctuation in the generated transcript.</p>
+                    </div>
+                    <div class="config-item__control config-item__control--inline">
+                      <label class="toggle toggle--checkbox">
+                        <input
+                          type="checkbox"
+                          id="model-punctuation"
+                          name="model.punctuation"
+                          aria-label="Enable punctuation"
+                        />
+                        <span class="sr-only">Enable punctuation</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label
+                        class="config-item__label"
+                        id="whisper-threads-label"
+                        for="whisper-threads"
+                        title="Override the number of CPU threads Whisper may use."
+                        >Threads</label
+                      >
+                      <p class="config-item__hint">
+                        Leave blank to auto-tune based on your CPU cores.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input
+                        type="number"
+                        id="whisper-threads"
+                        name="whisper.threads"
+                        min="1"
+                        step="1"
+                        placeholder="Auto"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-row">
+                <div class="config-row__header">
+                  <div>
+                    <div class="config-row__title">Voice Activity Detection</div>
+                    <p class="config-row__subtitle">
+                      Adjust how tightly Sprite listens before trimming or stopping a capture.
+                    </p>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="vad-aggressiveness">Aggressiveness</label>
+                      <p class="config-item__hint">
+                        Range 0-3. Higher values cut background noise faster but may trim speech.
+                      </p>
+                    </div>
+                    <div class="config-item__control config-item__control--range">
+                      <div class="slider-control slider-control--discrete slider-control--agg">
+                        <input
+                          type="range"
+                          id="vad-aggressiveness"
+                          name="vad.aggressiveness"
+                          min="0"
+                          max="3"
+                          step="1"
+                          required
+                        />
+                        <output data-vad-agg-output aria-live="polite">0</output>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="vad-start-grace">Start Grace (ms)</label>
+                      <p class="config-item__hint">
+                        Extra time after wake word before VAD starts enforcing silence.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input
+                        type="number"
+                        id="vad-start-grace"
+                        name="vad.start_grace_ms"
+                        min="200"
+                        step="50"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="vad-max-segment">Max Segment (ms)</label>
+                      <p class="config-item__hint">
+                        Hard cap on a single recording to avoid runaway sessions.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input
+                        type="number"
+                        id="vad-max-segment"
+                        name="vad.max_segment_ms"
+                        min="1000"
+                        step="250"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="vad-activation">Activation Window (ms)</label>
+                      <p class="config-item__hint">
+                        Minimum speaking time before VAD commits to a capture (lower = faster trigger).
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input
+                        type="number"
+                        id="vad-activation"
+                        name="vad.activation_ms"
+                        min="100"
+                        step="20"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="vad-post-silence">Post Speech Hold (ms)</label>
+                      <p class="config-item__hint">
+                        Silence grace after speech ends before closing capture (longer holds the mic open).
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input
+                        type="number"
+                        id="vad-post-silence"
+                        name="vad.post_speech_silence_ms"
+                        min="100"
+                        step="20"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-row">
+                <div class="config-row__header">
+                  <div>
+                    <div class="config-row__title">Wake Word</div>
+                    <p class="config-row__subtitle">
+                      Set your Picovoice keyword and sensitivity.
+                    </p>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="wakeword-keyword">Keyword</label>
+                      <p class="config-item__hint">Phrase that activates Sprite.</p>
+                    </div>
+                    <div class="config-item__control">
+                      <input type="text" id="wakeword-keyword" name="wakeword.keyword" maxlength="64" />
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="wakeword-sensitivity">Sensitivity</label>
+                      <p class="config-item__hint">0.0 = less sensitive, 1.0 = very sensitive.</p>
+                    </div>
+                    <div class="config-item__control config-item__control--range">
+                      <div class="slider-control slider-control--labeled slider-control--sensitivity">
+                        <input
+                          type="range"
+                          id="wakeword-sensitivity"
+                          name="wakeword.sensitivity"
+                          min="0"
+                          max="1"
+                          step="0.05"
+                          required
+                        />
+                        <output data-wakeword-sensitivity-output aria-live="polite">0.00</output>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-row">
+                <div class="config-row__header">
+                  <div>
+                    <div class="config-row__title">Push-To-Talk</div>
+                    <p class="config-row__subtitle">
+                      Configure your push-to-talk shortcut and whether it wins over wake word.
+                    </p>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="hotkey-ptt">Shortcut</label>
+                      <p class="config-item__hint">
+                        System-wide shortcut that starts listening.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <input type="text" id="hotkey-ptt" name="hotkey.push_to_talk" required />
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="hotkey-mode">Mode Precedence</label>
+                      <p class="config-item__hint">
+                        Pick which input wins when both are enabled.
+                      </p>
+                    </div>
+                    <div class="config-item__control">
+                      <select id="hotkey-mode" name="hotkey.mode_precedence">
+                        <option value="ptt">Push-to-talk first</option>
+                        <option value="wake">Wake word first</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-row">
+                <div class="config-row__header">
+                  <div>
+                    <div class="config-row__title">Logging &amp; UI</div>
+                    <p class="config-row__subtitle">
+                      Control logging detail and sprite size.
+                    </p>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="telemetry-level">Log Level</label>
+                      <p class="config-item__hint">Controls how much diagnostic data is captured.</p>
+                    </div>
+                    <div class="config-item__control">
+                      <select id="telemetry-level" name="telemetry.level">
+                        <option value="errors">Errors</option>
+                        <option value="info">Info</option>
+                        <option value="debug">Debug</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="config-item">
+                    <div class="config-item__meta">
+                      <label class="config-item__label" for="sprite-scale">Sprite Size</label>
+                      <p class="config-item__hint">Resize the on-screen sprite.</p>
+                    </div>
+                    <div class="config-item__control config-item__control--range">
+                      <div class="slider-control">
+                        <input
+                          type="range"
+                          id="sprite-scale"
+                          name="sprite.scale"
+                          min="0.2"
+                          max="1.5"
+                          step="0.05"
+                          value="1"
+                        />
+                        <output for="sprite-scale" data-sprite-scale-output>100%</output>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-row config-row--secrets">
+                <div class="config-row__header secrets-header">
+                  <div>
+                    <p class="secrets-summary__eyebrow">Secure storage</p>
+                    <div class="config-row__title">Secrets</div>
+                    <p class="config-row__subtitle">
+                      Manage sensitive keys stored securely.
+                    </p>
+                  </div>
+                  <div class="secrets-summary__status">
+                    <span class="secrets-summary__label">Status</span>
+                    <span class="status-message secret-status__message" data-secret-status role="status">
+                      Loading secrets...
+                    </span>
+                  </div>
+                </div>
+                <div class="config-row__items">
+                  <div class="secrets-shell">
+                    <div class="secrets-grid">
+                      <article class="secret-card" data-secret="picovoice">
+                        <header class="secret-card__header">
+                          <div>
+                            <div class="secret-card__title">Picovoice Key</div>
+                            <p class="secret-card__subtitle">Needed for wake word activation.</p>
+                            <p class="secret-card__hint">
+                              Get a key at
+                              <a
+                                href="https://console.picovoice.ai/"
+                                rel="noopener"
+                                data-external-link
+                              >console.picovoice.ai</a>
+                            </p>
+                          </div>
+                        <div class="secret-card__status">
+                          <span class="secret-status__pill" data-secret-pill>Loading?</span>
+                          <span class="secret-status__hint" data-secret-hint></span>
+                        </div>
+                      </header>
+                      <div class="secret-card__body">
+                        <div class="secret-card__hint-field">
+                          <label for="secret-picovoice-hint">Stored hint</label>
+                          <div class="secret-card__hint-row">
+                            <input
+                              id="secret-picovoice-hint"
+                              type="text"
+                              data-secret-hint-input
+                              readonly
+                              placeholder="No key stored"
+                            />
+                            <div class="secret-card__actions">
+                              <button id="secret-picovoice-set" type="button" class="button button--sm button--primary">
+                                Set key
+                              </button>
+                              <button
+                                id="secret-picovoice-clear"
+                                type="button"
+                                class="button button--ghost button--sm"
+                                disabled
+                              >
+                                Clear
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      </article>
+                      <div class="secrets-divider" aria-hidden="true"></div>
+                      <article class="secret-card" data-secret="worker-auth">
+                        <header class="secret-card__header">
+                          <div>
+                            <div class="secret-card__title">Worker Auth Token</div>
+                            <p class="secret-card__subtitle">Required for worker API calls.</p>
+                          </div>
+                        <div class="secret-card__status">
+                          <span class="secret-status__pill" data-secret-pill>Loading?</span>
+                          <span class="secret-status__hint" data-secret-hint></span>
+                        </div>
+                      </header>
+                      <div class="secret-card__body">
+                        <div class="secret-card__hint-field">
+                          <label for="secret-worker-auth-hint">Stored hint</label>
+                          <div class="secret-card__hint-row">
+                            <input
+                              id="secret-worker-auth-hint"
+                              type="text"
+                              data-secret-hint-input
+                              readonly
+                              placeholder="No token stored"
+                            />
+                            <div class="secret-card__actions">
+                              <button id="secret-worker-auth-set" type="button" class="button button--sm button--primary">
+                                Set token
+                              </button>
+                              <button
+                                id="secret-worker-auth-clear"
+                                type="button"
+                                class="button button--ghost button--sm"
+                                disabled
+                              >
+                                Clear
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                </div>
+              </div>
+              <pre id="config-patch-preview" class="config-preview config-preview--sticky">// No changes</pre>
+            </form>
+          </div>
+        </section>
+<section class="panel-view" data-view="preferences">
+          <div class="panel-view__header">
+            <h2 class="panel-view__title">Assistant Preferences</h2>
+            <div class="panel-toolbar">
+              <span class="preferences-status" data-preferences-status>Loading&hellip;</span>
+              <div class="preferences-actions">
+                <button id="preferences-cancel-btn" type="button" class="button button--ghost button--sm" disabled>
+                  Cancel
+                </button>
+                <button id="preferences-save-btn" type="button" class="button button--primary button--sm" disabled>
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-view__body preferences-body">
+            <div class="panel-card panel-card--stack preferences-shell">
+              <div id="preferences-form" class="preferences-form" data-preferences-form>
+                <fieldset class="preferences-card">
+                  <legend>Assistant Personality</legend>
+                  <div class="form-row">
+                    <label for="preferences-personality">Conversation tone</label>
+                    <textarea
+                      id="preferences-personality"
+                      name="preferences.personality"
+                      rows="3"
+                      maxlength="512"
+                      placeholder="Describe how the assistant should respond."
+                    ></textarea>
+                    <p class="form-hint">Used when the worker builds the system prompt.</p>
+                  </div>
+                </fieldset>
+                <fieldset class="preferences-card preferences-card--allowlist">
+                  <legend>Application Access</legend>
+                  <div class="preferences-allowlist-toolbar">
+                    <input
+                      type="search"
+                      id="preferences-search"
+                      class="preferences-search"
+                      placeholder="Search installed apps"
+                      aria-label="Search installed apps"
+                    />
+                    <button id="preferences-uncheck-all-btn" type="button" class="button button--ghost button--sm">
+                      Disable all
+                    </button>
+                    <button id="preferences-restore-btn" type="button" class="button button--ghost button--sm">
+                      Restore defaults
+                    </button>
+                  </div>
+                  <div class="preferences-allowlist-table" data-preferences-allowlist>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th scope="col">Application</th>
+                          <th scope="col" class="preferences-col-identifier">Identifier</th>
+                          <th scope="col" class="preferences-col-toggle">Allowed</th>
+                        </tr>
+                      </thead>
+                      <tbody data-preferences-allowlist-body>
+                        <tr class="preferences-empty">
+                          <td colspan="3">Loading installed applications&hellip;</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="panel-view panel-view--active" data-view="chat">
+          <div class="panel-view__header chat-header">
+            <div class="chat-header__actions">
+              <div class="chat-header__row chat-header__row--top">
+                <h2 class="panel-view__title">Conversation</h2>
+                <span class="mcp-summary-chip" data-mcp-summary>Tools idle</span>
+              </div>
+            <div class="chat-header__row chat-header__row--bottom">
+              <div class="chat-header__group chat-header__group--left">
+                <button id="chat-meta-toggle-btn" type="button" class="button button--ghost button--sm">
+                  Show Details
+                </button>
+                <button id="chat-context-toggle-btn" type="button" class="button button--ghost button--sm">
+                  Hide Context
+                </button>
+                <button id="chat-reset-btn" type="button" class="button button--ghost button--sm">
+                  Reset Session
+                </button>
+              </div>
+              <div class="chat-header__group chat-header__group--right">
+                <button id="mcp-toggle-btn" type="button" class="button button--ghost button--sm">
+                  Hide MCP
+                </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-layout" data-chat-layout>
+            <div class="chat-column">
+              <div class="chat-status-chip" data-chat-status hidden>Idle</div>
+              <div class="chat-log" data-chat-log>
+                <p class="chat-log__placeholder" data-chat-empty>
+                  Speak with Sprite or send a request from the overlay to see the conversation here.
+                </p>
+              </div>
+            </div>
+            <aside class="mcp-rail" data-mcp-rail>
+              <section class="panel-card mcp-progress">
+                <header class="panel-card__header">
+                  <div>
+                    <h3 class="panel-card__title">Tool Execution</h3>
+                    <p class="panel-card__subtitle">Planner + MCP steps for the current session</p>
+                  </div>
+                </header>
+                <p class="panel-view__placeholder" data-mcp-progress-empty>No MCP activity yet.</p>
+                <ul class="mcp-progress__list" data-mcp-progress-list></ul>
+              </section>
+            </aside>
+          </div>
+        </section>
+        <section class="panel-view" data-view="mcp">
+          <div class="panel-view__header">
+            <h2 class="panel-view__title">MCP Servers</h2>
+            <div class="panel-toolbar">
+              <span class="status-message" data-mcp-registry-status role="status"></span>
+              <button
+                type="button"
+                class="button button--ghost button--sm"
+                data-mcp-open-config
+              >
+                Edit Config
+              </button>
+            </div>
+          </div>
+          <p class="panel-view__placeholder" data-mcp-registry-empty>No MCP servers configured.</p>
+          <div class="mcp-registry__list" data-mcp-registry-list></div>
+        </section>
+        <section class="panel-view" data-view="logs">
+          <div class="panel-view__header">
+            <h2 class="panel-view__title">Runtime Logs</h2>
+            <div class="panel-toolbar">
+              <span class="logs-status" data-logs-status>Logs idle</span>
+              <button id="logs-refresh-btn" type="button" class="button button--ghost button--sm">Refresh</button>
+            </div>
+          </div>
+          <pre class="logs-output" data-logs-output>// No log entries yet</pre>
+        </section>
+        <section class="panel-view" data-view="about">
+          <div class="panel-about">
+            <header class="panel-about__header">
+              <div>
+                <h2 class="panel-view__title">About Sprite Assistant</h2>
+                <p class="panel-about__summary">
+                  Desktop control panel for the Sprite voice assistant: live STT state, MCP host telemetry, and runtime controls.
+                </p>
+              </div>
+              <dl class="panel-about__meta">
+                <div>
+                  <dt>Build</dt>
+                  <dd data-about-build>Loading&hellip;</dd>
+                </div>
+                <div>
+                  <dt>Runtime</dt>
+                  <dd data-about-runtime>Loading&hellip;</dd>
+                </div>
+                <div>
+                  <dt>Host OS</dt>
+                  <dd data-about-os>Loading&hellip;</dd>
+                </div>
+              </dl>
+            </header>
+
+            <article class="panel-card panel-about__card">
+              <h3 class="panel-card__title">Highlights</h3>
+              <ul class="panel-about__list">
+                <li><strong>Speech pipeline</strong> - Wake word + PTT capture into Whisper; preload banners keep STT asset downloads visible.</li>
+                <li><strong>MCP host</strong> - Built-in stdio host with lifecycle telemetry and registry view; edit `mcp.config.json` from here.</li>
+                <li><strong>Control panel</strong> - Chat with MCP rail, config editor, preferences (personality + allowlist), latency HUD, and log tail.</li>
+                <li><strong>Durable state</strong> - Preferences, conversation memory, and app allowlists persist per machine in the worker state store.</li>
+              </ul>
+            </article>
+
+            <article class="panel-card panel-about__card">
+              <h3 class="panel-card__title">Useful Links</h3>
+              <ul class="panel-about__links">
+                <li><a href="https://github.com/tulayha/sprite-assistant" rel="noopener">Source repository</a></li>
+                <li><a href="https://github.com/tulayha/sprite-assistant/blob/main/ARCHITECTURE.md" rel="noopener">Architecture overview</a></li>
+                <li><a href="https://github.com/tulayha/sprite-assistant/blob/main/apps/tauri/README.md" rel="noopener">Desktop guide</a></li>
+                <li><a href="https://github.com/tulayha/sprite-assistant/blob/main/apps/worker/README.md" rel="noopener">Worker guide</a></li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./panel.js"></script>
+  </body>
+</html>
