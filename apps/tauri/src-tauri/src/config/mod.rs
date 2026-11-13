@@ -8,6 +8,7 @@ use crate::stt::model_downloader;
 use crate::ui::sprite_window::SpriteWindowController;
 
 pub mod defaults;
+pub mod brain;
 mod diff;
 pub mod dirty_watchers;
 mod identity;
@@ -24,6 +25,7 @@ pub mod ui;
 mod worker;
 
 pub use defaults::DEFAULT_WORKER_BASE_URL;
+pub use brain::{BrainConfig, BrainProvider};
 pub use identity::IdentityConfig;
 pub use ui::PanelConfig;
 pub use worker::{RetryPolicy, WorkerBridgeConfig};
@@ -80,6 +82,14 @@ impl AppConfig {
             .read()
             .map(|guard| guard.clone())
             .unwrap_or_else(|_| WorkerBridgeConfig::new(DEFAULT_WORKER_BASE_URL.to_string()))
+    }
+
+    /// Snapshot of the brain configuration (worker vs codex provider).
+    pub fn brain(&self) -> BrainConfig {
+        self.stt
+            .read()
+            .map(|guard| guard.brain.clone())
+            .unwrap_or_default()
     }
 
     pub fn worker_state(&self) -> Arc<RwLock<WorkerBridgeConfig>> {

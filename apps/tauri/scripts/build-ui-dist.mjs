@@ -4,13 +4,11 @@
  * (`src-tauri/ui-dist`), so BOTH UIs ship from a single `frontendDist`:
  *
  *   ui-dist/
- *   ├── index.html, main.js, modules/, panel/ …   (v1 webview, copied)
- *   └── desktop/                                  (v2 build output)
+ *   ├── index.html, main.js, modules/ …   (v1 webview = sprite window)
+ *   └── desktop/                          (v2 panel UI, the only panel)
  *
  * The sprite "main" window keeps loading the v1 root (index.html) and the
- * v1 panel keeps loading `panel/index.html`; the panel window opts into the
- * v2 UI with `SPRITE_PANEL_V2=1` (see `src/panel/mod.rs`). Nothing here
- * modifies v1 sources — only copies.
+ * panel window loads `desktop/index.html` (the v1 panel was removed).
  */
 import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

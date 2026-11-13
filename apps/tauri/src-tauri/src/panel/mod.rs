@@ -166,19 +166,14 @@ impl PanelManager {
             return Ok(Some(window));
         }
 
-        // Aggregate dist (ui-dist): the v1 webview sits at the root and the
-        // v2 desktop UI lives under `desktop/`. `SPRITE_PANEL_V2=1` opts the
-        // panel window into the v2 UI; the default stays the v1 panel until
-        // the cutover is complete.
-        let panel_entry = if std::env::var("SPRITE_PANEL_V2").as_deref() == Ok("1") {
-            "desktop/index.html"
-        } else {
-            "panel/index.html"
-        };
+        // Aggregate dist (ui-dist): the v1 webview (sprite window) sits at
+        // the root and the v2 desktop UI lives under `desktop/`. The v2 UI is
+        // THE panel now — the legacy v1 panel was removed during the brain
+        // merge (single UI, single brain).
+        let panel_entry = "desktop/index.html";
 
-        // v2 test mode: show the panel immediately so the v2 UI is visible
-        // without going through the tray menu.
-        let v2_panel = std::env::var("SPRITE_PANEL_V2").as_deref() == Ok("1");
+        // The panel shows immediately on launch (no tray detour needed).
+        let v2_panel = true;
 
         let builder = WebviewWindowBuilder::new(
             &self.app_handle,

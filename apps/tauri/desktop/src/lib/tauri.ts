@@ -45,10 +45,24 @@ export async function invokeCommand<T>(
   if (!isTauri) {
     // eslint-disable-next-line no-console
     console.warn(`[tauri] command "${command}" ignored (running outside Tauri)`);
+    // Debug aid: surface the failure in the window title (readable from the
+    // shell with xdotool, no devtools required).
+    document.title = `[v2] ${command}: NO-TAURI`;
     return null;
   }
-  const { invoke } = await import("@tauri-apps/api/core");
-  return invoke<T>(command, payload as never);
+  try {
+    const { invoke } = await import("@tauri-apps/api/core");
+    const result = await invoke<T>(command, payload as never);
+    // Debug aid: last command + status in the window title.
+    document.title = `[v2] ${command}: OK`;
+    return result;
+  } catch (err) {
+    const msg = String(err).slice(0, 90);
+    // eslint-disable-next-line no-console
+    console.error(`[tauri] command "${command}" failed:`, err);
+    document.title = `[v2] ${command}: ERR ${msg}`;
+    return null;
+  }
 }
 
 /**
@@ -98,6 +112,11 @@ export function panelNavigate(view: string): Promise<unknown | null> {
 /** Hide the panel window (v1 `panel_hide_btn`). */
 export function panelHide(): Promise<unknown | null> {
   return invokeCommand("panel_hide");
+}
+
+/** Push-to-talk toggle (Rust `toggle_ptt { activate }`). */
+export function togglePtt(activate: boolean): Promise<unknown | null> {
+  return invokeCommand("toggle_ptt", { activate });
 }
 
 /** Mirror of the sprite window's UI state machine (`get_ui_snapshot`). */

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAlertStore } from "@/stores/alertStore";
 import { useUiStore } from "@/stores/uiStore";
 import { useMcpProgressStore, summarizeProgressEntries } from "@/stores/mcpStore";
+import { togglePtt } from "@/lib/tauri";
 
 /**
  * Shared chat status pieces (pills, MCP summary chip, Details/Context
@@ -191,5 +192,52 @@ export function ControlChips({
         {mcpRailVisible ? "Masquer MCP" : "MCP"}
       </button>
     </div>
+  );
+}
+
+/**
+ * Push-to-talk button — manual trigger for the voice capture when the global
+ * Ctrl+Space hotkey is unavailable (Wayland). Click toggles listening; the
+ * Rust `toggle_ptt` command does the actual work and emits the STT events.
+ */
+export function PttButton() {
+  const [active, setActive] = useState(false);
+  const sttError = useAlertStore((s) => s.sttError);
+
+  const handleClick = () => {
+    const next = !active;
+    setActive(next);
+    // Debug aid: mark the click itself (before the async invoke overwrites
+    // the title) so we can tell "click not firing" from "invoke failing".
+    document.title = "[v2] click PTT";
+    void togglePtt(next);
+  };
+
+  return (
+    <button
+      type="button"
+      aria-pressed={active ? "true" : "false"}
+      onClick={handleClick}
+      title={
+        active
+          ? "Arrêter l'écoute (transcrire)"
+          : "Écouter (push-to-talk) — parle après le clic"
+      }
+      className={`flex h-7 items-center gap-1 rounded-full px-2 py-1 text-[11px] transition-colors ${
+        active
+          ? "bg-sprite-danger/90 text-white"
+          : "text-sprite-muted hover:bg-surface-raised/60 hover:text-sprite-text"
+      }`}
+    >
+      {active ? (
+        <>
+          <span className="h-2 w-2 animate-pulse rounded-full bg-white" aria-hidden="true" />
+          Écoute…
+        </>
+      ) : (
+        <>🎙 Écouter</>
+      )}
+      {sttError ? <span className="text-sprite-danger" title={sttError}>⚠</span> : null}
+    </button>
   );
 }

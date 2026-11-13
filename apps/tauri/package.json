@@ -8,7 +8,7 @@
     "tauri:build": "tauri build",
     "tauri:icon": "tauri icon ./assets/app-icon.png",
     "lint:css": "stylelint webview/**/*.css",
-    "lint:js": "eslint \"webview/panel/**/*.js\" \"webview/main.js\" \"webview/modules/**/*.js\""
+    "lint:js": "eslint \"webview/main.js\" \"webview/modules/**/*.js\""
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0",

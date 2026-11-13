@@ -14,7 +14,6 @@ use tracing::{debug, error, info, warn};
 use crate::config::stt::{SttConfig, SttProvider};
 use crate::config::{stt, IdentityConfig, WorkerBridgeConfig as BridgeConfig};
 use crate::{
-    machine,
     metrics::{MetricsHandle, TurnTrigger},
     AssistantCommandResponse, AssistantIntent, IntentState,
 };
@@ -470,7 +469,7 @@ fn emit_placeholder_notice(app_handle: &AppHandle, config: &SttConfig) {
 fn spawn_pipeline(
     app_handle: AppHandle,
     transcript_rx: Receiver<TranscriptionEvent>,
-    worker_config: Arc<RwLock<BridgeConfig>>,
+    _worker_config: Arc<RwLock<BridgeConfig>>,
     intent_state: IntentState,
     mut shutdown: watch::Receiver<bool>,
 ) -> async_runtime::JoinHandle<()> {
@@ -485,13 +484,6 @@ fn spawn_pipeline(
                     match maybe_event {
                         Ok(event) => {
                             let TranscriptionEvent { text, trace_id } = event;
-                            let worker_cfg = match worker_config.read() {
-                                Ok(cfg) => cfg.clone(),
-                                Err(err) => {
-                                    error!("Worker config poisoned: {err}; skipping transcript");
-                                    continue;
-                                }
-                            };
 
                             if let Some(metrics_handle) = metrics.as_ref() {
                                 metrics_handle.mark_llm_request(&trace_id);
@@ -502,28 +494,26 @@ fn spawn_pipeline(
                                 .map(|s| s.inner().clone());
                             let app_config = app_handle
                                 .try_state::<crate::config::AppConfig>()
-                                .map(|s| s.preferences());
+                                .map(|s| s.inner().clone());
                             let host_handle = app_handle
                                 .try_state::<HostHandle>()
                                 .map(|s| s.inner().clone());
 
-                            let (Some(ms), Some(prefs), Some(host)) =
+                            let (Some(ms), Some(app_cfg), Some(host)) =
                                 (machine_state, app_config, host_handle)
                             else {
-                                error!("Machine state, preferences, or MCP host not available in app state");
+                                error!("Machine state, app config, or MCP host not available in app state");
                                 continue;
                             };
+                            let brain_cfg = app_cfg.brain();
 
-                            let chat_outcome = machine::run_worker_flow(
+                            let chat_outcome = crate::brain::run_chat_flow(
                                 app_handle.clone(),
-                                worker_cfg.clone(),
+                                brain_cfg,
                                 intent_state.clone(),
                                 ms.clone(),
                                 host.clone(),
-                                prefs,
                                 text.clone(),
-                                Some(trace_id.clone()),
-                                metrics.clone(),
                             )
                             .await;
                             match chat_outcome {
@@ -532,13 +522,8 @@ fn spawn_pipeline(
                                         metrics_handle.mark_llm_response(&trace_id, true, None);
                                     }
 
-                                    let machine::ChatWorkerOutcome {
-                                        response,
-                                        planner_intent,
-                                        planner_context,
-                                        session_token,
-                                        user_query,
-                                    } = outcome;
+                                    let crate::machine::ChatWorkerOutcome { response, .. } =
+                                        outcome;
 
                                     emit_worker_response(
                                         &app_handle,
@@ -546,35 +531,6 @@ fn spawn_pipeline(
                                         trace_id.clone(),
                                         metrics.clone(),
                                     );
-
-                                    if let Some(planner) = planner_intent {
-                                        let planner_context_clone = planner_context.clone();
-                                        let session_clone = session_token.clone();
-                                        let user_query_clone = user_query.clone();
-                                        async_runtime::spawn({
-                                            let app_handle = app_handle.clone();
-                                            let config = worker_cfg.clone();
-                                            let metrics = metrics.clone();
-                                            let trace_id = trace_id.clone();
-                                            let ms = ms.clone();
-                                            let host = host.clone();
-                                            async move {
-                                                machine::run_planner_flow(
-                                                    app_handle,
-                                                    config,
-                                                    ms,
-                                                    host,
-                                                    session_clone,
-                                                    user_query_clone,
-                                                    planner,
-                                                    planner_context_clone,
-                                                    Some(trace_id),
-                                                    metrics,
-                                                )
-                                                .await;
-                                            }
-                                        });
-                                    }
                                 }
                                 Err(err) => {
                                     if let Some(metrics_handle) = metrics.as_ref() {

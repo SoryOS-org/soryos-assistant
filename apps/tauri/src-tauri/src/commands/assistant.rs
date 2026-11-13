@@ -1,12 +1,13 @@
 //! Command handlers for intent dispatch, catalog refresh, and worker round-trips.
 
 use crate::{
+    brain,
     catalog,
     config::{machine_state::MachineStateManager, AppConfig},
     intents::{
         IntentBatchResult, IntentCatalogSnapshot, IntentRequest, IntentResponse, IntentState,
     },
-    machine, AssistantCommandResponse,
+    AssistantCommandResponse,
 };
 use mcp_host::HostHandle;
 use tauri::{async_runtime, AppHandle, State};
@@ -85,7 +86,7 @@ pub async fn get_application_catalog(
         .map_err(|err| err.to_string())
 }
 
-/// Invoke the worker bridge using the current preferences and machine state.
+/// Invoke the single Codex brain for a user request (v1 + v2 UIs).
 #[tauri::command]
 pub async fn process_user_request(
     app_handle: AppHandle,
@@ -95,42 +96,16 @@ pub async fn process_user_request(
     host_handle: State<'_, HostHandle>,
     user_query: String,
 ) -> Result<AssistantCommandResponse, String> {
-    let preferences = app_config.preferences();
-    let worker_cfg = app_config.worker();
-    let outcome = machine::run_worker_flow(
+    let brain_cfg = app_config.brain();
+    let outcome = brain::run_chat_flow(
         app_handle.clone(),
-        worker_cfg.clone(),
+        brain_cfg,
         state.inner().clone(),
         machine_state.inner().clone(),
         host_handle.inner().clone(),
-        preferences,
         user_query.clone(),
-        None,
-        None,
     )
     .await?;
-
-    if let Some(planner) = outcome.planner_intent.clone() {
-        let planner_context = outcome.planner_context.clone();
-        let session_token = outcome.session_token.clone();
-        let machine_state = machine_state.inner().clone();
-        let host = host_handle.inner().clone();
-        async_runtime::spawn(async move {
-            machine::run_planner_flow(
-                app_handle,
-                worker_cfg,
-                machine_state,
-                host,
-                session_token,
-                user_query,
-                planner,
-                planner_context,
-                None,
-                None,
-            )
-            .await;
-        });
-    }
 
     Ok(outcome.response)
 }

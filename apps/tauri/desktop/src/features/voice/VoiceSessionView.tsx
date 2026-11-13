@@ -3,7 +3,7 @@ import { useChatStore } from "@/stores/chatStore";
 import { useVoiceSignalStore } from "@/stores/voiceSignalStore";
 import { useUiStore } from "@/stores/uiStore";
 import { useMcpProgressStore } from "@/stores/mcpStore";
-import { MessageList, PillsRow, McpSummaryChip, ControlChips, Composer } from "@/features/chat";
+import { MessageList, PillsRow, McpSummaryChip, ControlChips, PttButton, Composer } from "@/features/chat";
 import { McpProgressRail } from "@/features/mcp/McpProgressRail";
 import { isTauri, listenToEvent } from "@/lib/tauri";
 import { EVENT_CHANNELS } from "@/lib/channels";
@@ -41,6 +41,7 @@ export function VoiceSessionView() {
         </span>
         <div className="flex items-center gap-2">
           <McpSummaryChip />
+          <PttButton />
           <ControlChips
             onMeta={(active) => setGlobalMetaVisible(active)}
             onContext={(active) => setContextVisible(active)}

@@ -4,7 +4,7 @@ import { useUiStore } from "@/stores/uiStore";
 import { panelHide } from "@/lib/tauri";
 import { MessageList } from "./MessageList";
 import { Composer } from "./Composer";
-import { PillsRow, McpSummaryChip, ControlChips } from "./chatStatus";
+import { PillsRow, McpSummaryChip, ControlChips, PttButton } from "./chatStatus";
 import { McpProgressRail } from "@/features/mcp/McpProgressRail";
 import { IconButton } from "@/ui/IconButton";
 /**
@@ -45,6 +45,7 @@ export function ChatView() {
 
         <div className="flex items-center gap-2">
           <McpSummaryChip />
+          <PttButton />
           <ControlChips
             onMeta={(active) => setGlobalMetaVisible(active)}
             onContext={(active) => setContextVisible(active)}

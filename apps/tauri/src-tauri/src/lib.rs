@@ -1,3 +1,4 @@
+mod brain;
 mod catalog;
 mod commands;
 mod config;
@@ -55,19 +56,6 @@ pub(crate) enum AssistantIntent {
         mcp_server: String,
         instruction: String,
     },
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct WorkerReply {
-    reply: String,
-    #[serde(default)]
-    summary: Option<String>,
-    #[serde(default)]
-    planner_context: Option<String>,
-    #[serde(default)]
-    intents: Vec<AssistantIntent>,
-    #[serde(default)]
-    reply_speak: bool,
 }
 
 #[derive(Debug, Clone, Default)]

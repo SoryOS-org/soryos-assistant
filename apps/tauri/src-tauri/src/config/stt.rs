@@ -4,6 +4,7 @@ use tauri::{App, AppHandle};
 use tracing::warn;
 
 use super::io;
+use super::brain::BrainConfig;
 use super::{defaults, paths, WorkerBridgeConfig};
 use crate::machine::worker_client;
 use crate::secret_store;
@@ -161,6 +162,8 @@ pub struct SttConfig {
     pub sprite: SpriteConfig,
     #[serde(default, skip_serializing_if = "WorkerConfig::is_default")]
     pub worker: WorkerConfig,
+    #[serde(default, skip_serializing_if = "BrainConfig::is_default")]
+    pub brain: BrainConfig,
 }
 
 impl SttConfig {
@@ -352,6 +355,7 @@ impl Default for SttConfig {
                     base_ms: default_retry_base_ms(),
                 },
             },
+            brain: BrainConfig::default(),
         }
     }
 }
